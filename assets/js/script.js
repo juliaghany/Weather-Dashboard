@@ -1,5 +1,5 @@
 var APIkey = "0978a0ccf12949ddddf0e4973961fbc5";
-var city;
+
 var currentCity = $("#current-city-and-date");
 const currentDay = dayjs();
 var currentTemp = $("#current-temp");
@@ -42,50 +42,58 @@ var dayFiveIcon = $("#day-5-icon");
 var dayFiveDate = $("#day-5-date");
 var dateFive = currentDay.add(5, "day");
 
+var submitBtn = $("#submit");
+var userInput = $(".user-input");
 
 
+function handleFormSubmit(event) {
+    event.preventDefault();
+    var city = userInput.val()
+    if (city) {
+        getWeather(city);
+    }
 
-var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&appid=" + APIkey;
-var requestURL = "http://api.openweathermap.org/data/2.5/weather?q=Austin&limit=5&units=imperial&appid=0978a0ccf12949ddddf0e4973961fbc5";
+};
 
-
-$(function () {
-    fetch(requestURL)
+function getWeather(city) {
+    var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + APIkey;
+    fetch(queryURL)
         .then(function (response) {
             return response.json();
         })
         .then(function (data) {
-            console.log(data); 
+
             currentCity.text(data.name + currentDay.format(" MM/DD/YY "));
             currentDayIcon.attr("src", "https://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png")
 
             currentTemp.text("Temp: " + data.main.temp + " °F");
             currentWind.text("Wind: " + data.wind.speed + " MPH");
             currentHumidity.text("Humidity: " + data.main.humidity + "%");
+
             var newRequestURL = "http://api.openweathermap.org/data/2.5/forecast?units=imperial&lat=" + data.coord.lat + "&lon=" + data.coord.lon + "&appid=" + APIkey;
-            fetch(newRequestURL) 
+            fetch(newRequestURL)
                 .then(function (response) {
                     return response.json();
                 })
                 .then(function (data) {
-                    console.log(data)
+
                     dayOneDate.text(dateOne.format("MM/DD/YY"));
-                    dayOneIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[6].weather[0].icon + "@2x.png");
-                    dayOneTemp.text("Temp: " + data.list[6].main.temp + " °F");
-                    dayOneWind.text("Wind: " + data.list[6].wind.speed + " MPH");
-                    dayOneHumidity.text("Humidity: " + data.list[6].main.humidity + "%");  
+                    dayOneIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[7].weather[0].icon + "@2x.png");
+                    dayOneTemp.text("Temp: " + data.list[7].main.temp + " °F");
+                    dayOneWind.text("Wind: " + data.list[7].wind.speed + " MPH");
+                    dayOneHumidity.text("Humidity: " + data.list[7].main.humidity + "%");
 
                     dayTwoDate.text(dateTwo.format("MM/DD/YY"));
-                    dayTwoIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[14].weather[0].icon + "@2x.png");
-                    dayTwoTemp.text("Temp: " + data.list[14].main.temp + " °F");
-                    dayTwoWind.text("Wind: " + data.list[14].wind.speed + " MPH");
-                    dayTwoHumidity.text("Humidity: " + data.list[14].main.humidity + "%");  
-                    
+                    dayTwoIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[15].weather[0].icon + "@2x.png");
+                    dayTwoTemp.text("Temp: " + data.list[15].main.temp + " °F");
+                    dayTwoWind.text("Wind: " + data.list[15].wind.speed + " MPH");
+                    dayTwoHumidity.text("Humidity: " + data.list[15].main.humidity + "%");
+
                     dayThreeDate.text(dateThree.format("MM/DD/YY"));
                     dayThreeIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[22].weather[0].icon + "@2x.png");
                     dayThreeTemp.text("Temp: " + data.list[22].main.temp + " °F");
                     dayThreeWind.text("Wind: " + data.list[22].wind.speed + " MPH");
-                    dayThreeHumidity.text("Humidity: " + data.list[22].main.humidity + "%");  
+                    dayThreeHumidity.text("Humidity: " + data.list[22].main.humidity + "%");
 
                     dayFourDate.text(dateFour.format("MM/DD/YY"));
                     dayFourIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[30].weather[0].icon + "@2x.png");
@@ -100,13 +108,34 @@ $(function () {
                     dayFiveHumidity.text("Humidity: " + data.list[38].main.humidity + "%");
 
 
-            })
+                })
+
         });
 
-    // $(".search-btn").on("click", function () {
-    //     var city = $(this).siblings(".user-input").val();
-    //     localStorage.setItem("city", city);
-    // });
+};
 
+
+
+function displaySearchHistory() {
+    var searchHistory = $("#search-history");
+    var pastCity = $("<button>");
+    pastCity.attr("class", "btn past-search-btn");
+    pastCity.text(localStorage.getItem("city"));
+    searchHistory.append(pastCity);
+
+    $("#search-history").on("click", function (event) {
+        var target = event.target
+        if (target.matches(".past-search-btn")) {
+            
+        }
+    });
+}
+
+submitBtn.on("click", handleFormSubmit);
+
+submitBtn.on("click", function () {
+    var searchedCity = userInput.val();
+    localStorage.setItem("city", searchedCity);
+    displaySearchHistory();
 });
 
