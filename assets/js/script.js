@@ -96,7 +96,6 @@ function getWeather(city) {
                     return response.json();
                 })
                 .then(function (data) {
-                    console.log(data);
 
                     dayOneDate.text(dateOne.format("MM/DD/YY"));
                     dayOneIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[5].weather[0].icon + "@2x.png");
@@ -165,7 +164,7 @@ function handleSearchHistoryClick(event) {
 
 submitBtn.on("click", handleFormSubmit);
 
-// even listener that displays search history once the user searches for a city 
+// event listener that displays search history once the user searches for a city 
 
 submitBtn.on("click", function () {
     var searchedCity = userInput.val();
