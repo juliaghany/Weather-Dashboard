@@ -77,6 +77,7 @@ function getWeather(city) {
                     </div>`
                         day++
                     }
+
                 })
 
         });
