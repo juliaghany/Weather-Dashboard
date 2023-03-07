@@ -103,7 +103,6 @@ function getWeather(city) {
                     const futureForecastElement = document.getElementById("future")
                     futureForecastElement.innerHTML = ""
                     let day = 1
-                    console.log(startingIndex)
                     for (let i = startingIndex; i < data.list.length; i += 8) {
                         var currentDate = currentDay.add(day, "day");
                         futureForecastElement.innerHTML += ` <div class="col-12 col-lg-2">
