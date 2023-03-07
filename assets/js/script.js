@@ -11,50 +11,7 @@ var currentWind = $("#current-wind");
 var currentHumidity = $("#current-humidity");
 var currentDayIcon = $("#current-day-icon");
 
-// assign variables for day one of future forecast
 
-var dayOneTemp = $("#day-1-temp");
-var dayOneWind = $("#day-1-wind");
-var dayOneHumidity = $("#day-1-humidity");
-var dayOneIcon = $("#day-1-icon");
-var dayOneDate = $("#day-1-date")
-var dateOne = currentDay.add(1, "day");
-
-// assign variables for day two of future forecast
-
-var dayTwoTemp = $("#day-2-temp");
-var dayTwoWind = $("#day-2-wind");
-var dayTwoHumidity = $("#day-2-humidity");
-var dayTwoIcon = $("#day-2-icon");
-var dayTwoDate = $("#day-2-date");
-var dateTwo = currentDay.add(2, "day");
-
-// assign variables for day three of future forecast
-
-var dayThreeTemp = $("#day-3-temp");
-var dayThreeWind = $("#day-3-wind");
-var dayThreeHumidity = $("#day-3-humidity");
-var dayThreeIcon = $("#day-3-icon");
-var dayThreeDate = $("#day-3-date");
-var dateThree = currentDay.add(3, "day");
-
-// assign variables for day four of future forecast
-
-var dayFourTemp = $("#day-4-temp");
-var dayFourWind = $("#day-4-wind");
-var dayFourHumidity = $("#day-4-humidity");
-var dayFourIcon = $("#day-4-icon");
-var dayFourDate = $("#day-4-date");
-var dateFour = currentDay.add(4, "day");
-
-// assign variables for day five of future forecast
-
-var dayFiveTemp = $("#day-5-temp");
-var dayFiveWind = $("#day-5-wind");
-var dayFiveHumidity = $("#day-5-humidity");
-var dayFiveIcon = $("#day-5-icon");
-var dayFiveDate = $("#day-5-date");
-var dateFive = currentDay.add(5, "day");
 
 // assign variable for submit button, user input field, and search history container 
 
@@ -96,38 +53,30 @@ function getWeather(city) {
                     return response.json();
                 })
                 .then(function (data) {
-
-                    dayOneDate.text(dateOne.format("MM/DD/YY"));
-                    dayOneIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[5].weather[0].icon + "@2x.png");
-                    dayOneTemp.text("Temp: " + data.list[5].main.temp + " °F");
-                    dayOneWind.text("Wind: " + data.list[5].wind.speed + " MPH");
-                    dayOneHumidity.text("Humidity: " + data.list[5].main.humidity + "%");
-
-                    dayTwoDate.text(dateTwo.format("MM/DD/YY"));
-                    dayTwoIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[15].weather[0].icon + "@2x.png");
-                    dayTwoTemp.text("Temp: " + data.list[13].main.temp + " °F");
-                    dayTwoWind.text("Wind: " + data.list[13].wind.speed + " MPH");
-                    dayTwoHumidity.text("Humidity: " + data.list[13].main.humidity + "%");
-
-                    dayThreeDate.text(dateThree.format("MM/DD/YY"));
-                    dayThreeIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[23].weather[0].icon + "@2x.png");
-                    dayThreeTemp.text("Temp: " + data.list[21].main.temp + " °F");
-                    dayThreeWind.text("Wind: " + data.list[21].wind.speed + " MPH");
-                    dayThreeHumidity.text("Humidity: " + data.list[21].main.humidity + "%");
-
-                    dayFourDate.text(dateFour.format("MM/DD/YY"));
-                    dayFourIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[29].weather[0].icon + "@2x.png");
-                    dayFourTemp.text("Temp: " + data.list[29].main.temp + " °F");
-                    dayFourWind.text("Wind: " + data.list[29].wind.speed + " MPH");
-                    dayFourHumidity.text("Humidity: " + data.list[31].main.humidity + "%");
-
-                    dayFiveDate.text(dateFive.format("MM/DD/YY"));
-                    dayFiveIcon.attr("src", "https://openweathermap.org/img/wn/" + data.list[37].weather[0].icon + "@2x.png");
-                    dayFiveTemp.text("Temp: " + data.list[37].main.temp + " °F");
-                    dayFiveWind.text("Wind: " + data.list[37].wind.speed + " MPH");
-                    dayFiveHumidity.text("Humidity: " + data.list[37].main.humidity + "%");
-
-
+                    console.log(data);
+                    var startingIndex;
+                    for (let i = 0; data.list.length; i++) {
+                        console.log(data.list[i].dt_txt.split(" ")[1])
+                        if (data.list[i].dt_txt.split(" ")[1] == "15:00:00") {
+                            startingIndex = i
+                            break
+                        }
+                    }
+                    const futureForecastElement = document.getElementById("future")
+                    futureForecastElement.innerHTML = ""
+                    let day = 1
+                    console.log(startingIndex)
+                    for (let i = startingIndex; i < data.list.length; i += 8) {
+                        var currentDate = currentDay.add(day, "day");
+                        futureForecastElement.innerHTML += ` <div class="col-12 col-lg-2">
+                        <p>${currentDate.format("MM/DD/YY")}</p>
+                        <img src=${"https://openweathermap.org/img/wn/" + data.list[i].weather[0].icon + "@2x.png"} class="future-icon">
+                            <p>Temp: ${data.list[i].main.temp + " °F"}</p>
+                            <p>Wind: ${data.list[i].wind.speed + " MPH"}</p>
+                            <p>Humidity: ${data.list[i].main.humidity + "%"}</p>
+                    </div>`
+                        day++
+                    }
                 })
 
         });
@@ -176,3 +125,8 @@ submitBtn.on("click", function () {
 // event listener for search history buttons
 
 searchHistoryContainer.on('click', handleSearchHistoryClick);
+
+
+var first = "Julia"
+var last = "Hany"
+console.log(`${first} ${last}`)
