@@ -11,8 +11,6 @@ var currentWind = $("#current-wind");
 var currentHumidity = $("#current-humidity");
 var currentDayIcon = $("#current-day-icon");
 
-
-
 // assign variable for submit button, user input field, and search history container 
 
 var submitBtn = $("#submit");
@@ -30,6 +28,40 @@ function handleFormSubmit(event) {
 
 };
 
+// function that handles load storage, adds buttons to search history as user searches for a city
+
+function loadStorage() {
+    var pastSearches = JSON.parse(localStorage.getItem("searched-cities"));
+    if (!pastSearches) {
+        localStorage.setItem("searched-cities", JSON.stringify([]))
+        return
+    }
+
+    var searchHistory = $("#search-history");
+
+    searchHistory.empty()
+
+    for (let i = 0; i < pastSearches.length; i++) {
+        var pastCity = $("<button>");
+        pastCity.attr("class", "btn past-search-btn");
+        pastCity.text(pastSearches[i]);
+        searchHistory.append(pastCity)
+    }
+}
+
+// function that saves new searches to local storage and calls loads storage 
+
+function saveToStorage(newCity) {
+    var pastSearches = JSON.parse(localStorage.getItem("searched-cities"))
+    if (pastSearches.includes(newCity)) { return }
+    pastSearches.push(newCity)
+    if (pastSearches.length > 5) {
+        pastSearches.shift()
+    }
+    localStorage.setItem("searched-cities", JSON.stringify(pastSearches))
+    loadStorage()
+}
+
 // function that gets weather data from api and displays current weather and future weather on the page
 
 function getWeather(city) {
@@ -39,7 +71,7 @@ function getWeather(city) {
             return response.json();
         })
         .then(function (data) {
-
+            saveToStorage(data.name)
             currentCity.text(data.name + currentDay.format(" MM/DD/YY "));
             currentDayIcon.attr("src", "https://openweathermap.org/img/wn/" + data.weather[0].icon + "@2x.png")
 
@@ -53,15 +85,21 @@ function getWeather(city) {
                     return response.json();
                 })
                 .then(function (data) {
-                    console.log(data);
+
+                    // ensures weather data is presented for 3pm for each day in the future forecast
+
                     var startingIndex;
-                    for (let i = 0; data.list.length; i++) {
+
+                    for (let i = 0; i < data.list.length; i++) {
                         console.log(data.list[i].dt_txt.split(" ")[1])
                         if (data.list[i].dt_txt.split(" ")[1] == "15:00:00") {
                             startingIndex = i
                             break
                         }
                     }
+
+                    // for loop to dynamically format the future forecast divs
+
                     const futureForecastElement = document.getElementById("future")
                     futureForecastElement.innerHTML = ""
                     let day = 1
@@ -84,17 +122,8 @@ function getWeather(city) {
 
 };
 
-// function that creates the search history button for each city that the user searches  
-
-function displaySearchHistory() {
-    var searchHistory = $("#search-history");
-    var pastCity = $("<button>");
-    pastCity.attr("class", "btn past-search-btn");
-    pastCity.text(localStorage.getItem("city"));
-    searchHistory.append(pastCity);
-}
-
-// function that ensures the user is clicking on a search history button, if/when they do it calls the getWeather function to show the weather for the city they selected
+// function that ensures the user is clicking on a search history button, if/when they do it calls the getWeather function to show the weather for 
+// the city they selected
 
 function handleSearchHistoryClick(event) {
     if (!event.target.matches('.past-search-btn')) {
@@ -114,12 +143,9 @@ function handleSearchHistoryClick(event) {
 
 submitBtn.on("click", handleFormSubmit);
 
-// event listener that displays search history once the user searches for a city 
+// event listener for searh button, clears input field after clicking
 
 submitBtn.on("click", function () {
-    var searchedCity = userInput.val();
-    localStorage.setItem("city", searchedCity);
-    displaySearchHistory();
     $(".user-input").val('')
 });
 
@@ -127,7 +153,4 @@ submitBtn.on("click", function () {
 
 searchHistoryContainer.on('click', handleSearchHistoryClick);
 
-
-var first = "Julia"
-var last = "Hany"
-console.log(`${first} ${last}`)
+loadStorage();
