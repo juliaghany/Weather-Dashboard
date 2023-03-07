@@ -1,5 +1,7 @@
 # Weather Dashboard
 
+https://juliaghany.github.io/Weather-Dashboard/
+
 ![Alt text](assets/images/weather-dashboard-screenshot.png)
 ![Alt text](assets/images/weather-dashboard-screenshot-2.png)
 
