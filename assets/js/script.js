@@ -65,7 +65,7 @@ function saveToStorage(newCity) {
 // function that gets weather data from api and displays current weather and future weather on the page
 
 function getWeather(city) {
-    var queryURL = "http://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + APIkey;
+    var queryURL = "https://api.openweathermap.org/data/2.5/weather?q=" + city + "&units=imperial&appid=" + APIkey;
     fetch(queryURL)
         .then(function (response) {
             return response.json();
@@ -79,7 +79,7 @@ function getWeather(city) {
             currentWind.text("Wind: " + data.wind.speed + " MPH");
             currentHumidity.text("Humidity: " + data.main.humidity + "%");
 
-            var newRequestURL = "http://api.openweathermap.org/data/2.5/forecast?units=imperial&lat=" + data.coord.lat + "&lon=" + data.coord.lon + "&appid=" + APIkey;
+            var newRequestURL = "https://api.openweathermap.org/data/2.5/forecast?units=imperial&lat=" + data.coord.lat + "&lon=" + data.coord.lon + "&appid=" + APIkey;
             fetch(newRequestURL)
                 .then(function (response) {
                     return response.json();
